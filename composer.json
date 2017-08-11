@@ -1,0 +1,30 @@
+{
+  "name": "hhxsv5/php-coroutine",
+  "type": "library",
+  "license": "MIT",
+  "description": "A lightweight library to implement coroutine by yield & Generator.",
+  "keywords": [
+    "php-coroutine",
+    "coroutine",
+    "yield",
+    "Generator"
+  ],
+  "homepage": "https://github.com/hhxsv5/php-coroutine",
+  "authors": [
+    {
+      "name": "Xie Biao",
+      "email": "hhxsv5@sina.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Hhxsv5\\Coroutine\\": "src"
+    }
+  }
+}
