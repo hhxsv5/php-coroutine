@@ -5,39 +5,38 @@ use Hhxsv5\Coroutine\Scheduler;
 
 $start = microtime(true);
 /**
- * @param mixed & $return
  * @return Generator
  */
-function task1(&$return)
+function task1()
 {
     echo 'task1:start ', microtime(true), PHP_EOL;
-    $return = yield file_get_contents('http://www.weather.com.cn/data/cityinfo/101270101.html');
+    $ret = yield file_get_contents('http://www.weather.com.cn/data/cityinfo/101270101.html');
     echo 'task1:end ', microtime(true), PHP_EOL;
+    return $ret;
 }
 
 /**
- * @param mixed & $return
  * @return Generator
  */
-function task2(&$return)
+function task2()
 {
     echo 'task2:start ', microtime(true), PHP_EOL;
-    $return = yield file_get_contents('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=yourtoken');
+    $ret = yield file_get_contents('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=yourtoken');
     echo 'task2:end ', microtime(true), PHP_EOL;
+    return $ret;
 }
 
 $scheduler = new Scheduler();
 
-$t1 = task1($return1);
-$t2 = task2($return2);
-
+$t1 = task1();
+$t2 = task2();
 
 $scheduler->createTask($t1);
 $scheduler->createTask($t2);
 
 $scheduler->run();
 
-var_dump($return1, $return2);
+var_dump($t1->getReturn(), $t2->getReturn());//PHP 7+
 
 $end = microtime(true) - $start;
 echo $end;

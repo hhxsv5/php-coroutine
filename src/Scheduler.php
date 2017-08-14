@@ -9,6 +9,15 @@ class Scheduler
     protected $taskMap   = []; // taskId => task
     protected $taskQueue;
 
+    /**
+     * @var array IO queue that waiting to read [resourceID => [socket, tasks]].
+     */
+    protected $waitingForRead = [];
+    /**
+     * @var array IO queue that waiting to write [resourceID => [socket, tasks]].
+     */
+    protected $waitingForWrite = [];
+
     public function __construct()
     {
         $this->taskQueue = new \SplQueue();

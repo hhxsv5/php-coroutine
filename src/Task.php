@@ -6,8 +6,7 @@ class Task
 {
     protected $id;
     protected $coroutine;
-    protected $sendValue;
-    protected $beforeFirstYield = true;
+    protected $exception;
 
     public function __construct($id, \Generator $coroutine)
     {
@@ -20,21 +19,17 @@ class Task
         return $this->id;
     }
 
-    public function setSendValue($sendValue)
+    public function setException(\Exception $exception)
     {
-        $this->sendValue = $sendValue;
+        $this->exception = $exception;
     }
 
     public function run()
     {
-        if ($this->beforeFirstYield) {
-            $this->beforeFirstYield = false;
-            return $this->coroutine->current();
-        } else {
-            $retValue = $this->coroutine->send($this->sendValue);
-            $this->sendValue = null;
-            return $retValue;
-        }
+        $retValue = $this->coroutine->current();
+        //TODO: 嵌套协程
+        //TODO: 异常处理
+        $this->coroutine->send($retValue);
     }
 
     public function isFinished()

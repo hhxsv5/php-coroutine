@@ -16,33 +16,97 @@ composer require "hhxsv5/php-coroutine:~1.0" -vvv
 ## Usage
 ### Run demo
 
+- PHP 5.5+
+
 ```PHP
 include '../vendor/autoload.php';
 
 use Hhxsv5\Coroutine\Scheduler;
 
-function task1()
+$start = microtime(true);
+/**
+ * @param mixed & $return
+ * @return Generator
+ */
+function task1(&$return)
 {
-    for ($i = 1; $i <= 5; ++$i) {
-        echo "Task1: {$i}", PHP_EOL;
-        yield;
-    }
+    echo 'task1:start ', microtime(true), PHP_EOL;
+    $return = yield file_get_contents('http://www.weather.com.cn/data/cityinfo/101270101.html');
+    echo 'task1:end ', microtime(true), PHP_EOL;
 }
 
-function task2()
+/**
+ * @param mixed & $return
+ * @return Generator
+ */
+function task2(&$return)
 {
-    for ($i = 1; $i <= 5; ++$i) {
-        echo "Task2: {$i}", PHP_EOL;
-        yield;
-    }
+    echo 'task2:start ', microtime(true), PHP_EOL;
+    $return = yield file_get_contents('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=yourtoken');
+    echo 'task2:end ', microtime(true), PHP_EOL;
 }
 
 $scheduler = new Scheduler();
 
-$scheduler->createTask(task1());
-$scheduler->createTask(task2());
+$t1 = task1($return1);
+$t2 = task2($return2);
+
+
+$scheduler->createTask($t1);
+$scheduler->createTask($t2);
 
 $scheduler->run();
+
+var_dump($return1, $return2);
+
+$end = microtime(true) - $start;
+echo $end;
+```
+
+- PHP7+ 
+
+```PHP
+include '../vendor/autoload.php';
+
+use Hhxsv5\Coroutine\Scheduler;
+
+$start = microtime(true);
+/**
+ * @return Generator
+ */
+function task1()
+{
+    echo 'task1:start ', microtime(true), PHP_EOL;
+    $ret = yield file_get_contents('http://www.weather.com.cn/data/cityinfo/101270101.html');
+    echo 'task1:end ', microtime(true), PHP_EOL;
+    return $ret;
+}
+
+/**
+ * @return Generator
+ */
+function task2()
+{
+    echo 'task2:start ', microtime(true), PHP_EOL;
+    $ret = yield file_get_contents('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=yourtoken');
+    echo 'task2:end ', microtime(true), PHP_EOL;
+    return $ret;
+}
+
+$scheduler = new Scheduler();
+
+$t1 = task1();
+$t2 = task2();
+
+$scheduler->createTask($t1);
+$scheduler->createTask($t2);
+
+$scheduler->run();
+
+var_dump($t1->getReturn(), $t2->getReturn());//PHP 7+
+
+$end = microtime(true) - $start;
+echo $end;
 ```
 
 ## License
