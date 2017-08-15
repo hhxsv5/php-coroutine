@@ -10,7 +10,7 @@ $start = microtime(true);
 function task1()
 {
     echo 'task1:start ', microtime(true), PHP_EOL;
-    $ret = yield file_get_contents('http://www.weather.com.cn/data/cityinfo/101270101.html');
+    $ret = (yield file_get_contents('http://www.weather.com.cn/data/cityinfo/101270101.html'));
     echo 'task1:end ', microtime(true), PHP_EOL;
     return $ret;
 }
@@ -21,7 +21,7 @@ function task1()
 function task2()
 {
     echo 'task2:start ', microtime(true), PHP_EOL;
-    $ret = yield file_get_contents('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=yourtoken');
+    $ret = (yield file_get_contents('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=yourtoken'));
     echo 'task2:end ', microtime(true), PHP_EOL;
     return $ret;
 }
