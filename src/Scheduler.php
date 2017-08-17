@@ -6,7 +6,6 @@ namespace Hhxsv5\Coroutine;
 class Scheduler
 {
     protected $maxTaskId = 0;
-    protected $taskMap   = []; // taskId => task
     protected $taskQueue;
 
     public function __construct()
@@ -18,7 +17,6 @@ class Scheduler
     {
         $tid = ++$this->maxTaskId;
         $task = new Task($tid, $coroutine);
-        $this->taskMap[$tid] = $task;
         $this->schedule($task);
         return $tid;
     }
@@ -38,7 +36,7 @@ class Scheduler
             $task->run();
 
             if ($task->isFinished()) {
-                unset($this->taskMap[$task->getId()]);
+                //Finished
             } else {
                 $this->schedule($task);
             }
